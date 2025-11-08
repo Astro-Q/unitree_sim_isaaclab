@@ -1,0 +1,42 @@
+{
+  "training": {
+    "batch_size": 32,
+    "epochs": 100,
+    "learning_rate": 1e-4,
+    "fine_tune_lr": 1e-5,
+    "val_split": 0.2,
+    "image_channels": 3,
+    "image_size": [224, 224],
+    "joint_dim": 29,
+    "action_dim": 29,
+    "hidden_dim": 256,
+    "save_interval": 10
+  },
+  "data_processing": {
+    "image_size": [224, 224],
+    "min_frames": 10,
+    "max_frames": 10000
+  },
+  "deployment": {
+    "simulation": {
+      "device": "cuda",
+      "fps": 30
+    },
+    "real_robot": {
+      "device": "cpu",
+      "fps": 30
+    }
+  },
+  "robot_configs": {
+    "g129": {
+      "joint_dim": 29,
+      "action_dim": 29,
+      "end_effectors": ["dex1", "dex3", "inspire"]
+    },
+    "h1_2": {
+      "joint_dim": 27,
+      "action_dim": 27,
+      "end_effectors": ["inspire"]
+    }
+  }
+}
