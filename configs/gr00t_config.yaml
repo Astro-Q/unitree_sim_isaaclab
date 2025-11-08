@@ -1,0 +1,59 @@
+# Isaac-GR00T N1.5 微调配置
+# 用于宇树机器人双臂5指灵巧手抓取任务
+
+# GR00T模型配置
+gr00t:
+  model_name: "GR00T-N1.5"
+  model_path: null  # 将从HuggingFace或本地加载
+  use_pretrained: true
+  checkpoint_path: null  # 预训练检查点路径（可选）
+
+# 机器人配置
+robot:
+  type: "g1"  # g1, h1_2
+  effector: "inspire"  # dex1, dex3, inspire
+  dof: 29  # 自由度
+  hand_dof: 24  # 双手总自由度 (12 per hand)
+
+# 任务配置
+task:
+  name: "Isaac-PickPlace-Cylinder-G129-Inspire-Joint"
+  observation_space:
+    joint_positions: true
+    joint_velocities: true
+    end_effector_pose: true
+    object_pose: true
+    images: true
+    image_cameras: ["front_camera", "left_wrist_camera", "right_wrist_camera"]
+  action_space:
+    arm_joints: 14  # 每只手臂7个关节
+    hand_joints: 24  # 双手24个关节
+    total: 38  # 14 + 24
+
+# 训练配置
+training:
+  output_dir: "./outputs/gr00t_training"
+  batch_size: 32
+  learning_rate: 1e-5  # GR00T微调使用较小的学习率
+  weight_decay: 1e-4
+  epochs: 50
+  warmup_epochs: 5
+  gradient_clip: 1.0
+  save_interval: 10
+  eval_interval: 5
+
+# 数据配置
+data:
+  data_dir: "./data/teleoperate"
+  processed_dir: "./data/processed"
+  train_split: 0.9
+  normalize: true
+  augment: false  # GR00T通常不需要数据增强
+  num_workers: 4
+
+# 部署配置
+deployment:
+  onnx_export: true
+  optimize: true
+  quantize: false  # 量化可能影响精度
+  target_device: "cuda"
