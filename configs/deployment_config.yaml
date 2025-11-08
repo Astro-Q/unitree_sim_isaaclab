@@ -1,0 +1,69 @@
+# 模型部署配置
+# Copyright (c) 2025, Unitree Robotics Co., Ltd. All Rights Reserved.
+
+# 机器人配置
+robot:
+  type: "g1"  # g1, h1_2
+  ip: "192.168.123.10"
+  effector: "inspire"  # dex1, dex3, inspire
+  dof: 29  # 自由度
+
+# 模型配置
+model:
+  path: "./models/bc_inspire/model.onnx"
+  type: "onnx"  # onnx, torchscript, tensorrt
+  
+  # 输入输出维度
+  state_dim: 60
+  action_dim: 43
+
+# 数据处理配置
+data_processing:
+  statistics_path: "./processed_data/statistics.pkl"
+  normalize: true
+  
+# 控制配置
+control:
+  frequency: 50.0  # Hz
+  control_mode: "position"  # position, velocity, torque
+  
+  # 安全限制
+  safety:
+    enabled: true
+    max_action_delta: 0.1
+    action_limits: [-1.0, 1.0]
+    velocity_limits: [-2.0, 2.0]
+    
+    # 紧急停止条件
+    emergency_stop:
+      max_joint_velocity: 5.0
+      max_joint_acceleration: 10.0
+      max_end_effector_velocity: 2.0
+
+# DDS通信配置
+dds:
+  domain_id: 1
+  qos_profile: "default"
+  timeout: 1000  # ms
+  
+# 监控配置
+monitoring:
+  enabled: true
+  log_dir: "./deployment_logs"
+  log_frequency: 10  # Hz
+  
+  # 记录的信息
+  record:
+    joint_states: true
+    actions: true
+    camera_images: false
+    performance_metrics: true
+
+# 测试模式
+test_mode:
+  enabled: false
+  duration: 60.0  # 测试运行时长（秒）
+  dry_run: false  # 只打印不执行
+
+# 其他
+verbose: true
