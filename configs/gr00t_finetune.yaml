@@ -1,0 +1,69 @@
+# GR00T微调训练配置
+# Copyright (c) 2025, Unitree Robotics Co., Ltd. All Rights Reserved.
+
+# 模型配置
+model:
+  model_name: "gr00t_n1.5"  # GR00T模型名称
+  pretrained_checkpoint: null  # 预训练模型路径 (null表示从官方仓库下载)
+  freeze_backbone: false  # 是否冻结backbone (true=只微调输出层, false=端到端微调)
+  
+# 训练配置
+training:
+  epochs: 50  # 微调轮数 (通常比从头训练少)
+  batch_size: 32  # 批次大小 (根据GPU内存调整)
+  learning_rate: 1e-4  # 学习率 (微调通常使用较小的学习率)
+  weight_decay: 1e-4
+  min_lr: 1e-6
+  grad_clip: 1.0
+  
+  # 学习率调度
+  scheduler:
+    type: "cosine"
+    warmup_epochs: 5  # 微调时warmup可以更短
+  
+  # 优化器
+  optimizer:
+    type: "adamw"
+    betas: [0.9, 0.999]
+    eps: 1e-8
+
+# 数据配置
+data:
+  data_dir: "./processed_data"
+  use_images: true  # 是否使用图像数据
+  image_size: [224, 224]
+  num_workers: 4
+  pin_memory: true
+  
+  # 数据增强 (微调时可以启用)
+  augmentation:
+    enabled: true
+    random_crop: false
+    random_flip: false
+    color_jitter: true
+    jitter_strength: 0.1
+
+# 验证配置
+validation:
+  interval: 1
+  metric: "mse"
+
+# 保存配置
+checkpoint:
+  save_interval: 5
+  save_best: true
+  save_last: true
+
+# 日志配置
+logging:
+  use_wandb: false
+  wandb_project: "unitree_gr00t_finetune"
+  wandb_entity: null
+  log_interval: 10
+
+# 设备配置
+device: "cuda"
+
+# 其他
+seed: 42
+num_threads: 4
